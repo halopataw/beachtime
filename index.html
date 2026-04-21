@@ -24,288 +24,265 @@
             font-family: 'Noto Sans TC', sans-serif;
             overflow-x: hidden;
             margin: 0;
-            font-size: 14px; /* 手機版基礎字級 */
+            font-size: 15px;
+            line-height: 1.6;
+            -webkit-tap-highlight-color: transparent;
         }
-        @media (min-width: 768px) { body { font-size: 16px; } }
 
-        .heading-narrow { font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; }
-        .mono { font-family: 'Share Tech Mono', monospace; }
+        /* 導覽列 */
+        .status-bar {
+            background: rgba(10, 15, 29, 0.96);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(165, 180, 252, 0.2);
+            position: fixed;
+            top: 0; width: 100%; z-index: 1000;
+            padding: 10px 15px;
+        }
+
+        /* 按鈕樣式 */
+        .btn-action {
+            background: rgba(51, 65, 85, 0.7);
+            border: 1px solid var(--cold-light);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            z-index: 200;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 28px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .btn-action:hover { background: var(--cold-light); color: var(--sea-dark); box-shadow: 0 0 15px var(--cold-light); }
+        .btn-action:active { transform: scale(0.95); }
+
+        .choice-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 16px;
+            text-align: left;
+            transition: all 0.3s;
+            font-size: 1rem;
+            width: 100%;
+            cursor: pointer;
+            border-radius: 6px;
+            color: white;
+            display: block;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 150;
+        }
+        .choice-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--cold-light); }
+        .choice-btn.active { background: var(--cold-light); color: var(--sea-dark); font-weight: bold; border-color: white; box-shadow: 0 0 12px var(--cold-light); }
 
         .scene-section {
             min-height: 100vh;
             width: 100%;
             position: relative;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 80px 1rem 40px 1rem; /* 增加頂部間距供 Nav 使用 */
+            padding: 110px 1.5rem 60px 1.5rem;
+            box-sizing: border-box;
+            z-index: 10;
         }
 
-        /* 燈塔掃描 */
-        .lighthouse-beam {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 300vw;
-            height: 100px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
-            transform-origin: left center;
-            animation: sweep 8s infinite ease-in-out;
-            z-index: 1;
-            pointer-events: none;
-        }
-        @keyframes sweep {
-            0% { transform: rotate(-20deg) translate(-50%, -50%); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: rotate(160deg) translate(-50%, -50%); opacity: 0; }
-        }
-
-        .status-bar {
-            background: rgba(10, 15, 29, 0.95);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(165, 180, 252, 0.2);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 100;
-            padding: 0.5rem 1rem;
-        }
-
-        .btn-action {
-            position: relative;
-            background: rgba(51, 65, 85, 0.6);
-            border: 1px solid var(--cold-light);
-            transition: all 0.3s;
-            cursor: pointer;
-            z-index: 20;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-        .btn-action:active { transform: scale(0.95); background: var(--cold-light); color: black; }
-
-        .flash-white {
-            position: fixed;
-            inset: 0;
-            background: white;
-            z-index: 2000;
-            opacity: 0;
-            pointer-events: none;
-        }
-        .flashing { animation: flashEffect 0.6s ease-out; }
-        @keyframes flashEffect { 0% { opacity: 0; } 10% { opacity: 1; } 100% { opacity: 0; } }
-
-        /* 回饋面板手機優化 */
-        .feedback-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.96);
-            z-index: 1000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 1rem;
-        }
-        .feedback-panel {
-            width: 100%;
-            max-width: 600px;
-            max-height: 85vh;
-            background: #0f172a;
-            border: 1px solid rgba(255,255,255,0.1);
-            overflow-y: auto;
-            border-top: 6px solid var(--iron-gray);
-        }
-
-        /* 九宮格 */
-        .puzzle-grid-container {
-            position: relative;
-            width: 100%;
-            max-width: 320px; /* 手機版略縮 */
-            aspect-ratio: 1;
-            background-image: url('https://lh3.googleusercontent.com/pw/AP1GczOMPzn_lHNIjeOyKUHUv97vgrVLC-a6ViMwriRlId_VE0ReR79HsR_75Nb2ntyZfdX1RVpXbo18dpAid5Kp-tiZ8DzOW7qnAaJsfEUKiCAXa0rbVSfBlRBvPHT_8jWAxOCAsdNoW0AhrVsWUgmx94E=w981-h901-s-no-gm?authuser=0');
-            background-size: cover;
-            background-position: center;
-            margin: 0 auto;
-        }
-        @media (min-width: 768px) { .puzzle-grid-container { max-width: 460px; } }
-
-        /* 響應式佈局網格 */
-        .interactive-layout {
+        /* 響應式佈局 */
+        .interactive-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 2rem;
             width: 100%;
-            max-width: 1200px;
+            max-width: 1100px;
+            margin: 0 auto;
         }
         @media (min-width: 1024px) {
-            .interactive-layout { grid-template-columns: 1fr 1.3fr 1fr; }
+            .interactive-grid { grid-template-columns: 1fr 1.4fr 1fr; align-items: stretch; gap: 3rem; }
         }
 
-        .video-container { width: 100%; max-width: 800px; aspect-ratio: 16/9; background: black; }
+        /* 圖像容器 */
+        .puzzle-grid-container {
+            position: relative; width: 100%; max-width: 320px; aspect-ratio: 1;
+            background-image: url('https://lh3.googleusercontent.com/pw/AP1GczOMPzn_lHNIjeOyKUHUv97vgrVLC-a6ViMwriRlId_VE0ReR79HsR_75Nb2ntyZfdX1RVpXbo18dpAid5Kp-tiZ8DzOW7qnAaJsfEUKiCAXa0rbVSfBlRBvPHT_8jWAxOCAsdNoW0AhrVsWUgmx94E=w981-h901-s-no-gm?authuser=0');
+            background-size: cover; background-position: center; margin: 0 auto; border: 2px solid rgba(165, 180, 252, 0.3); border-radius: 6px;
+        }
+        @media (min-width: 768px) { .puzzle-grid-container { max-width: 440px; } }
+
+        .flag-item {
+            cursor: pointer; transition: all 0.3s; border: 2px solid rgba(255, 255, 255, 0.1); width: 100%; border-radius: 6px; padding: 10px; background: rgba(255, 255, 255, 0.03); display: flex; flex-direction: column; align-items: center;
+        }
+        .flag-item.active { border-color: var(--cold-light); background: rgba(165, 180, 252, 0.15); }
+        .flag-visual { width: 100%; min-height: 80px; aspect-ratio: 3/2; border-radius: 2px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); animation: flap 4s infinite ease-in-out; }
+        @keyframes flap { 0%, 100% { transform: skewY(0deg); } 50% { transform: skewY(1.5deg); } }
+
+        .explanation-box { background: rgba(26, 42, 68, 0.5); border: 1px solid rgba(165, 180, 252, 0.2); padding: 15px; font-size: 0.85rem; color: var(--cold-light); border-radius: 4px; }
         
-        .flag-visual { width: 100%; aspect-ratio: 3/2; box-shadow: 0 4px 10px rgba(0,0,0,0.5); animation: flap 3s infinite ease-in-out; }
-        
+        .lighthouse-beam {
+            position: absolute; top: 50%; left: 50%; width: 300vw; height: 120px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+            transform-origin: left center; animation: sweep 12s infinite ease-in-out; z-index: 1; pointer-events: none;
+        }
+        @keyframes sweep { 0% { transform: rotate(-30deg) translate(-50%, -50%); } 50% { transform: rotate(60deg) translate(-50%, -50%); } 100% { transform: rotate(150deg) translate(-50%, -50%); } }
+
+        /* 回饋面板 */
+        .feedback-overlay {
+            position: fixed;
+            inset: 0; background: rgba(0, 0, 0, 0.98); z-index: 2000;
+            display: none; justify-content: center; align-items: center; padding: 1.5rem;
+        }
+        .feedback-panel {
+            width: 100%; max-width: 620px; max-height: 85vh;
+            background: #0f172a; border: 1px solid rgba(255,255,255,0.1);
+            overflow-y: auto; border-top: 6px solid var(--iron-gray); border-radius: 8px;
+            padding: 2.5rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
         .hidden-scene { display: none !important; }
+        .mono { font-family: 'Share Tech Mono', monospace; }
+        .flash-white { position: fixed; inset: 0; background: white; z-index: 3000; opacity: 0; pointer-events: none; }
+        .flashing { animation: flashEffect 0.6s ease-out; }
+        @keyframes flashEffect { 0% { opacity: 0; } 10% { opacity: 1; } 100% { opacity: 0; } }
 
-        .cctv-overlay { position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.01), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.01)); background-size: 100% 4px, 3px 100%; pointer-events: none; z-index: 10; }
+        /* 第四章資料表 */
+        .wind-data-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; color: #94a3b8; }
+        .wind-data-table td { padding: 8px 4px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .wind-data-table .highlight { color: white; font-weight: bold; }
 
-        /* 成果頁面滾動 */
-        .results-page {
-            height: 100vh;
-            overflow-y: auto;
-            padding-top: 100px;
-            background: linear-gradient(to bottom, #0a0f1d, #1a2a44);
-        }
+        .sea-view-box { width: 100%; aspect-ratio: 16/10; background-size: cover; background-position: center; border: 2px solid rgba(165, 180, 252, 0.2); position: relative; overflow: hidden; border-radius: 4px; }
+        .scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 1px; background: rgba(165, 180, 252, 0.6); box-shadow: 0 0 10px var(--cold-light); animation: scanUpDown 4s infinite linear; }
+        @keyframes scanUpDown { 0% { top: 0; } 100% { top: 100%; } }
 
-        /* 解決 iOS 彈跳與渲染問題 */
-        html, body { height: 100%; -webkit-overflow-scrolling: touch; }
+        .scan-map-container { background: #020617; border: 2px solid #1e293b; position: relative; overflow: hidden; width: 100%; height: 350px; border-radius: 4px; max-width: 400px; margin: 0 auto; }
+        .scan-radar { position: absolute; top: 50%; left: 50%; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent 80%, rgba(165, 180, 252, 0.1)); transform: translate(-50%, -50%); animation: radarRotate 4s infinite linear; pointer-events: none; }
+        @keyframes radarRotate { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+        .scan-target { position: absolute; width: 30px; height: 30px; border: 1px solid var(--cold-light); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; background: rgba(10, 15, 29, 0.95); border-radius: 2px; z-index: 20; }
     </style>
 </head>
 <body class="bg-[#0a0f1d]">
 
     <div id="flash-overlay" class="flash-white"></div>
 
-    <!-- 響應式頂部狀態列 -->
+    <!-- 狀態列 -->
     <nav id="top-nav" class="status-bar opacity-0 transition-opacity duration-1000">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
             <div class="flex items-center gap-4">
-                <div class="heading-narrow text-lg md:text-xl tracking-tighter text-white font-bold whitespace-nowrap">重生航線</div>
-                <div class="h-4 w-px bg-slate-700 hidden md:block"></div>
-                <div class="flex items-center gap-4 text-[10px] md:text-[11px] tracking-tight text-slate-400">
-                    <div class="flex flex-col"><span class="opacity-60">修復</span><span id="nav-hull" class="text-green-400 font-bold mono">32%</span></div>
-                    <div class="flex flex-col"><span class="opacity-60">潮汐</span><span id="nav-tide" class="text-blue-400 font-bold mono">19:59</span></div>
-                    <div class="flex flex-col"><span class="opacity-60">能量</span><span id="nav-energy" class="text-yellow-400 font-bold mono">100%</span></div>
+                <div class="heading-narrow text-xl text-white font-bold tracking-tighter">重生航線</div>
+                <div class="flex items-center gap-4 text-[10px] md:text-[11px] text-slate-400 uppercase">
+                    <div class="flex flex-col"><span>Repair</span><span id="nav-hull" class="text-green-400 font-bold mono">32%</span></div>
+                    <div class="flex flex-col"><span>Tide</span><span id="nav-tide" class="text-blue-400 font-bold mono">19:59</span></div>
+                    <div class="flex flex-col"><span>Energy</span><span id="nav-energy" class="text-yellow-400 font-bold mono">100%</span></div>
                 </div>
             </div>
             <div class="flex items-center gap-2 w-full md:w-auto justify-between md:justify-end">
-                <button onclick="restartGame()" class="px-3 py-1 border border-slate-700 text-[10px] text-slate-400 rounded">RESTART</button>
-                <span id="nav-chapter" class="px-4 py-1 bg-white text-black font-bold text-[10px] rounded uppercase">序章</span>
+                <button onclick="restartGame()" class="px-3 py-1 border border-slate-700 text-[10px] text-slate-400 rounded hover:text-white transition uppercase">Restart</button>
+                <span id="nav-chapter" class="px-4 py-1 bg-white text-black font-bold text-[10px] rounded uppercase min-w-[80px] text-center">序章</span>
             </div>
         </div>
     </nav>
 
-    <!-- 響應式回饋面板 -->
+    <!-- 回饋面板 -->
     <div id="feedback-overlay" class="feedback-overlay">
-        <div id="feedback-panel" class="feedback-panel p-6 md:p-10 shadow-2xl rounded">
+        <div id="feedback-panel" class="feedback-panel">
             <div class="flex justify-between items-start mb-6 border-b border-white/10 pb-4">
-                <h3 id="feedback-title" class="text-2xl md:text-3xl font-bold tracking-tighter"></h3>
-                <span id="feedback-status" class="mono text-[10px] px-2 py-1 bg-white/10 text-blue-400 uppercase">SYS_LOG</span>
+                <h3 id="feedback-title" class="text-2xl md:text-3xl font-bold tracking-tighter uppercase text-white">Analysis</h3>
+                <span id="feedback-status" class="mono text-[10px] px-2 py-1 bg-white/10 text-blue-400 uppercase">Report_Log</span>
             </div>
             <div class="space-y-6">
-                <div id="feedback-content" class="text-sm md:text-lg text-slate-200 leading-relaxed font-light"></div>
+                <div id="feedback-content" class="text-base md:text-lg text-slate-200 leading-relaxed text-center md:text-left"></div>
                 <div id="feedback-extra" class="p-4 bg-white/5 border-l-4 border-slate-500 text-left">
-                    <div id="feedback-extra-title" class="text-[10px] font-bold text-slate-400 mb-2 uppercase">Analysis</div>
-                    <div id="feedback-extra-body" class="text-xs md:text-base text-slate-300 italic"></div>
+                    <div id="feedback-extra-title" class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-widest">Guide</div>
+                    <div id="feedback-extra-body" class="text-sm md:text-base text-slate-300 italic"></div>
                 </div>
                 <div id="feedback-system" class="grid grid-cols-3 gap-2 hidden">
-                    <div class="p-2 border border-white/10 text-center bg-slate-900/50 rounded">
-                        <div class="text-[8px] text-slate-500 uppercase">Module</div>
-                        <div id="sys-module-name" class="text-[9px] md:text-xs text-blue-400 font-bold"></div>
-                    </div>
-                    <div class="p-2 border border-white/10 text-center bg-slate-900/50 rounded">
-                        <div class="text-[8px] text-slate-500 uppercase">Hull</div>
-                        <div id="sys-repair-val" class="text-[9px] md:text-xs text-green-400 font-bold"></div>
-                    </div>
-                    <div class="p-2 border border-white/10 text-center bg-slate-900/50 rounded">
-                        <div class="text-[8px] text-slate-500 uppercase">Progress</div>
-                        <div id="sys-progress-val" class="text-[9px] md:text-xs text-white font-bold"></div>
-                    </div>
+                    <div class="p-2 border border-white/10 text-center bg-slate-900/50 rounded"><div class="text-[8px] text-slate-500 uppercase mb-1">Module</div><div id="sys-module-name" class="text-[10px] text-blue-400 font-bold"></div></div>
+                    <div class="p-2 border border-white/10 text-center bg-slate-900/50 rounded"><div class="text-[8px] text-slate-500 uppercase mb-1">Repair</div><div id="sys-repair-val" class="text-[10px] text-green-400 font-bold"></div></div>
+                    <div class="p-2 border border-white/10 text-center bg-slate-900/50 rounded"><div class="text-[8px] text-slate-500 uppercase mb-1">Progress</div><div id="sys-progress-val" class="text-[10px] text-white font-bold"></div></div>
                 </div>
-                <button id="feedback-btn" onclick="closeFeedback()" class="w-full py-4 text-sm md:text-base font-bold transition uppercase tracking-widest bg-slate-700 text-white shadow-xl rounded">CONTINUE</button>
+                <button id="feedback-btn" onclick="closeFeedback()" class="w-full py-4 text-base font-bold transition uppercase tracking-widest bg-slate-700 text-white rounded">Continue</button>
             </div>
         </div>
     </div>
 
     <main id="game-canvas">
-        <!-- 幕 1｜封面 -->
+        <!-- 第 1 幕：封面 -->
         <section id="scene-1" class="scene-section bg-slate-900 overflow-hidden">
             <div class="lighthouse-beam"></div>
-            <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1516132006923-6cf348e5dee2?auto=format&fit=crop&q=80&w=2000')] bg-cover opacity-30"></div>
-            <div class="relative z-10 text-center px-4">
-                <h1 class="text-4xl md:text-7xl heading-narrow font-bold tracking-tighter mb-4 text-white">外木山：重生航線</h1>
-                <p class="text-sm md:text-xl text-slate-400 mb-12 tracking-[0.2em] md:tracking-[0.3em] font-light italic">在漲潮吞沒一切之前，讀懂海，才有資格離開海。</p>
-                <button onclick="triggerFlashTransition('video')" class="btn-action px-10 py-4 text-lg md:text-xl font-bold rounded text-white uppercase tracking-widest border-blue-400 shadow-[0_0_15px_rgba(165,180,252,0.3)]">啟動任務</button>
+            <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1516132006923-6cf348e5dee2?auto=format&fit=crop&q=80&w=2000')] bg-cover opacity-25"></div>
+            <div class="relative z-10 text-center px-4 max-w-2xl">
+                <h1 class="text-5xl md:text-8xl heading-narrow font-bold tracking-tighter mb-4 text-white uppercase">外木山：重生航線</h1>
+                <p class="text-sm md:text-xl text-slate-400 mb-12 tracking-widest font-light italic leading-loose">在漲潮吞沒一切之前，讀懂海，才有資格離開海。</p>
+                <button onclick="triggerFlashTransition('video')" class="btn-action">啟動任務</button>
             </div>
         </section>
 
         <!-- 影片幕 -->
         <section id="scene-video" class="scene-section hidden-scene bg-black">
             <div class="flex flex-col items-center gap-8 w-full max-w-4xl mx-auto px-4">
-                <div class="video-container rounded shadow-2xl border border-white/10">
+                <div class="video-container rounded border border-white/10 overflow-hidden shadow-2xl">
                     <iframe id="intro-video" class="w-full h-full" src="https://www.youtube.com/embed/rdX1Y7HL9qM?si=dzmFg9NaE3F3YfJF&enablejsapi=1" frameborder="0" allowfullscreen></iframe>
                 </div>
-                <button onclick="triggerFlashTransition(2)" class="btn-action px-8 py-3 text-xs tracking-widest font-bold text-white/60 hover:text-white uppercase">跳過影片 / 進入任務日誌</button>
+                <button onclick="triggerFlashTransition(2)" class="btn-action border-slate-700 opacity-60">跳過影片 / 進入任務日誌</button>
             </div>
         </section>
 
-        <!-- 幕 2｜日誌敘事 -->
-        <section id="scene-2" class="scene-section hidden-scene bg-black">
+        <!-- 第 2 幕：日誌 -->
+        <section id="scene-2" class="scene-section hidden-scene bg-black text-center">
             <div class="cctv-overlay"></div>
-            <div class="max-w-2xl w-full px-4 mx-auto text-center md:text-left">
-                <div class="p-6 md:p-10 bg-slate-900/60 border-l-4 border-red-600 backdrop-blur-md rounded-r">
+            <div class="max-w-2xl w-full px-4 mx-auto">
+                <div class="p-6 md:p-10 bg-slate-900/60 border-l-4 border-red-600 backdrop-blur-md rounded-r text-left">
                     <div class="text-red-500 mono mb-4 text-xs font-bold tracking-widest uppercase">LOG_ENTRY // 0812_INCIDENT</div>
-                    <p id="typewriter-log" class="text-lg md:text-2xl text-slate-100 leading-relaxed mono font-medium min-h-[100px]"></p>
+                    <p id="typewriter-log" class="text-lg md:text-2xl text-slate-100 leading-relaxed mono font-medium min-h-[160px]"></p>
                 </div>
-                <div class="text-center mt-10">
-                    <button onclick="triggerRedAlert()" class="btn-action px-8 py-4 text-red-500 border-red-500 font-bold text-sm md:text-lg uppercase tracking-widest rounded hover:bg-red-950">開啟緊急模式</button>
+                <div class="mt-12">
+                    <button onclick="triggerRedAlert()" class="btn-action border-red-500 text-red-500">開啟緊急模式</button>
                 </div>
             </div>
         </section>
 
-        <!-- 幕 3｜系統啟動 -->
-        <section id="scene-3" class="scene-section hidden-scene bg-black">
-            <div class="max-w-4xl w-full px-4 mx-auto">
-                <div class="hud-border p-6 md:p-12 relative overflow-hidden bg-slate-900/30 rounded">
-                    <h2 class="text-xl md:text-3xl font-bold text-red-500 mb-8 md:mb-14 italic tracking-tight border-b border-red-900/30 pb-4 text-center">生存修復程序已啟動</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 md:gap-y-12 mb-10 md:mb-16">
-                        <div class="flex justify-between items-end border-b border-white/10 pb-2 md:pb-3">
-                            <span class="text-sm md:text-2xl font-bold text-slate-500">船體修復值</span>
-                            <span class="text-2xl md:text-6xl font-black text-green-400 mono">32%</span>
-                        </div>
-                        <div class="flex justify-between items-end border-b border-white/10 pb-2 md:pb-3">
-                            <span class="text-sm md:text-2xl font-bold text-slate-500">動力系統</span>
-                            <span class="text-2xl md:text-6xl font-black text-red-500 italic">失效</span>
-                        </div>
-                        <div class="flex justify-between items-end border-b border-white/10 pb-2 md:pb-3">
-                            <span class="text-sm md:text-2xl font-bold text-slate-500">潮汐狀態</span>
-                            <span class="text-2xl md:text-5xl font-black text-blue-400">上升中</span>
-                        </div>
-                        <div class="flex justify-between items-end border-b border-white/10 pb-2 md:pb-3">
-                            <span class="text-sm md:text-2xl font-bold text-slate-500">通訊能量</span>
-                            <span class="text-2xl md:text-6xl font-black text-yellow-400 mono">100%</span>
-                        </div>
+        <!-- 第 3 幕：HUD -->
+        <section id="scene-3" class="scene-section hidden-scene bg-black text-center px-4">
+            <div class="max-w-4xl w-full mx-auto">
+                <div class="hud-border p-6 md:p-12 bg-slate-900/40 rounded relative">
+                    <h2 class="text-2xl md:text-3xl font-bold text-red-500 mb-10 italic tracking-tight border-b border-red-900/30 pb-4 uppercase">System Initiated</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 md:gap-y-12 mb-12">
+                        <div class="flex justify-between items-end border-b border-white/10 pb-2"><span class="text-sm md:text-xl font-bold text-slate-500">船體修復值</span><span class="text-3xl md:text-6xl font-black text-green-400 mono">32%</span></div>
+                        <div class="flex justify-between items-end border-b border-white/10 pb-2"><span class="text-sm md:text-xl font-bold text-slate-500">動力系統</span><span class="text-3xl md:text-6xl font-black text-red-500 italic">失效</span></div>
+                        <div class="flex justify-between items-end border-b border-white/10 pb-2"><span class="text-sm md:text-xl font-bold text-slate-500">潮汐狀態</span><span class="text-3xl md:text-5xl font-black text-blue-400">上升中</span></div>
+                        <div class="flex justify-between items-end border-b border-white/10 pb-2"><span class="text-sm md:text-xl font-bold text-slate-500">通訊能量</span><span class="text-3xl md:text-6xl font-black text-yellow-400 mono">100%</span></div>
                     </div>
-                    <button onclick="confirmMission()" class="w-full py-5 bg-red-600/10 border-2 border-red-600 text-red-500 font-black text-lg md:text-2xl tracking-[0.3em] hover:bg-red-600 hover:text-white transition-all uppercase rounded">確認任務目標</button>
+                    <button onclick="confirmMission()" class="w-full btn-action border-red-600 bg-red-600/10 text-red-500">確認任務目標</button>
                 </div>
             </div>
         </section>
 
-        <!-- 第一章｜死亡的誘惑 -->
-        <section id="scene-4" class="scene-section hidden-scene bg-slate-900">
-            <div class="max-w-2xl px-4 text-center mx-auto">
-                <div class="text-blue-400 mono text-xs mb-4 font-bold tracking-widest uppercase">CHAPTER_01</div>
-                <h2 class="text-3xl md:text-5xl font-bold mb-8 text-white tracking-tight">第一章｜死亡的誘惑</h2>
-                <div class="space-y-4 text-base md:text-xl text-slate-300 leading-relaxed font-light">
-                    <p>海浪還在拍打船底。你們試著從船側下到沙灘，想趁潮水尚未完全湧上來時，把船重新推回較深的水道。</p>
-                    <p>環境探偵機器突然發出刺耳警報：</p>
-                    <p class="text-red-500 font-bold tracking-widest animate-pulse py-2">「警告。偵測到異常拉力。」</p>
-                    <p>前方海面監測畫面已傳回，大部分海域白沫翻湧，可有幾個區塊卻異常安靜...</p>
+        <!-- 第一章：離岸流 -->
+        <section id="scene-4" class="scene-section hidden-scene bg-slate-900 text-center px-4">
+            <div class="max-w-2xl mx-auto">
+                <div class="text-blue-400 mono text-xs mb-4 font-bold tracking-widest uppercase text-center">CHAPTER_01</div>
+                <h2 class="text-3xl md:text-5xl font-bold mb-10 text-white tracking-tight text-center">第一章｜死亡的誘惑</h2>
+                <div class="space-y-6 text-sm md:text-lg text-slate-300 leading-relaxed font-light text-left md:text-center">
+                    <p>海浪還在拍打船底。你們試著下到沙灘，想趁潮水尚未完全湧上來時，把船重新推回深水道。</p>
+                    <p>環境探偵機器突然發出刺耳警報：<br><span class="text-red-500 font-bold tracking-widest animate-pulse uppercase">「警告。偵測到異常拉力。」</span></p>
+                    <p>螢幕切換成監測畫面。海面被分割成 9 個區塊，大部分白沫翻湧，可有幾個區塊卻安靜得不自然。</p>
                 </div>
-                <button onclick="nextScene(5)" class="mt-10 btn-action px-10 py-4 font-bold text-white tracking-widest uppercase rounded">進入監測畫面</button>
+                <button onclick="nextScene(5)" class="mt-10 btn-action border-blue-400">進入監測畫面</button>
             </div>
         </section>
 
         <section id="scene-5" class="scene-section hidden-scene bg-[#0a0f1d]">
-            <div class="interactive-layout mx-auto px-4">
-                <div class="flex flex-col justify-center text-center md:text-left order-2 md:order-1">
-                    <h2 class="text-2xl md:text-3xl font-bold mb-4 text-white">離岸流判讀</h2>
-                    <p class="text-slate-400 text-sm mb-6 leading-relaxed font-light">找出畫面中異常平靜的「深色區塊」，輸入編號總和以標記危險流道。</p>
-                    <button onclick="showHint('rip')" class="w-full md:w-fit px-5 py-2 border border-slate-700 text-xs font-bold text-slate-400 rounded">查看判讀提示</button>
+            <div class="interactive-grid px-4">
+                <div class="flex flex-col justify-center text-center lg:text-left order-2 lg:order-1">
+                    <h2 class="text-2xl font-bold mb-4 text-white">危險區識別</h2>
+                    <p class="text-slate-400 text-sm mb-8 leading-relaxed font-light">找出畫面中異常平靜的「深色區塊」，輸入其編號總和以標記流道。</p>
+                    <button onclick="showHint('rip')" class="btn-action border-slate-700 text-xs py-2">查看判讀提示</button>
                 </div>
-                <div class="order-1 md:order-2">
+                <div class="flex items-center justify-center order-1 lg:order-2">
                     <div class="puzzle-grid-container" id="rip-current-bg">
-                        <div class="absolute inset-0 grid grid-cols-3 grid-rows-3 z-10 mono">
+                        <div class="absolute inset-0 grid grid-cols-3 grid-rows-3 mono">
                             <div class="grid-cell" onclick="toggleCell(this, 1)">1</div><div class="grid-cell" onclick="toggleCell(this, 2)">2</div><div class="grid-cell" onclick="toggleCell(this, 3)">3</div>
                             <div class="grid-cell" onclick="toggleCell(this, 4)">4</div><div class="grid-cell" onclick="toggleCell(this, 5)">5</div><div class="grid-cell" onclick="toggleCell(this, 6)">6</div>
                             <div class="grid-cell" onclick="toggleCell(this, 7)">7</div><div class="grid-cell" onclick="toggleCell(this, 8)">8</div><div class="grid-cell" onclick="toggleCell(this, 9)">9</div>
@@ -313,307 +290,304 @@
                     </div>
                 </div>
                 <div class="flex flex-col justify-center order-3">
-                    <div class="p-6 bg-slate-900/80 border border-slate-700 rounded shadow-xl">
-                        <input type="number" id="rip-answer" placeholder="輸入編號總和" class="w-full bg-black/50 border border-slate-700 px-4 py-3 text-white mono text-xl focus:border-blue-500 outline-none text-center rounded mb-4">
-                        <button onclick="checkRipCurrent()" class="w-full btn-action py-4 font-bold text-white uppercase rounded">確認判讀結果</button>
+                    <div class="p-6 bg-slate-900/90 border border-slate-700 rounded shadow-xl">
+                        <input type="number" id="rip-answer" placeholder="編號總和" class="w-full bg-black/50 border border-white/10 px-4 py-3 text-white mono text-xl focus:border-blue-500 outline-none text-center rounded mb-4">
+                        <button onclick="checkRipCurrent()" class="w-full btn-action border-blue-400">提交判讀</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 第二章｜染紅的旗幟 -->
-        <section id="scene-6" class="scene-section hidden-scene bg-slate-900">
+        <!-- 第二章：救生旗幟 -->
+        <section id="scene-6" class="scene-section hidden-scene bg-slate-900 text-center px-4">
             <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1533042782162-8408f9f60447?auto=format&fit=crop&q=80&w=1600')] bg-cover opacity-20"></div>
-            <div class="max-w-2xl px-4 mx-auto relative z-10 text-center">
+            <div class="max-w-3xl mx-auto relative z-10">
                 <div class="text-red-400 mono text-xs mb-4 font-bold tracking-widest uppercase">CHAPTER_02</div>
-                <h2 class="text-3xl md:text-5xl font-bold mb-8 text-white tracking-tight">第二章｜染紅的旗幟</h2>
-                <div class="p-6 bg-red-950/20 border-l-4 border-red-600 backdrop-blur-sm shadow-xl text-left space-y-4 text-slate-200 text-sm md:text-xl leading-relaxed rounded-r">
-                    <p>你們剛調整完推船路徑，阿強突然整個人跪倒。腳踝被破裂礁石劃開，鮮血迅速滲進沙裡。</p>
-                    <p>岸邊救生站的醫護箱被電子鎖封住，螢幕閃爍著：</p>
-                    <p class="text-red-500 font-bold text-lg md:text-2xl text-center py-4 border-y border-white/10 uppercase">「只有懂得敬畏海的人，才有資格開啟救援。」</p>
+                <h2 class="text-3xl md:text-5xl font-bold mb-10 text-white tracking-tight">第二章｜染紅的旗幟</h2>
+                <div class="p-6 bg-red-950/20 border-l-4 border-red-600 backdrop-blur-sm shadow-xl text-left space-y-5 text-slate-200 text-sm md:text-lg leading-relaxed rounded-r">
+                    <p>調整完路徑後，阿強突然整個人跪倒。腳踝被礁石劃開，鮮血滲進沙裡，暈成一片暗色。醫護箱被電子鎖封閉，螢幕閃爍：</p>
+                    <p class="text-white font-bold text-lg md:text-2xl text-center py-4 border-y border-white/10 uppercase tracking-widest text-red-500">「只有懂得敬畏海的人，才有資格開啟救援。」</p>
                 </div>
-                <button onclick="nextScene(7)" class="mt-10 btn-action px-10 py-4 font-bold text-white uppercase tracking-widest rounded border-red-400">查看螢幕畫面</button>
+                <button onclick="nextScene(7)" class="mt-10 btn-action border-red-400">查看螢幕畫面</button>
             </div>
         </section>
 
         <section id="scene-7" class="scene-section hidden-scene">
-            <div class="interactive-layout mx-auto px-4">
-                <div class="flex flex-col justify-center text-left order-2 md:order-1">
+            <div class="interactive-grid px-4">
+                <div class="flex flex-col justify-center text-left order-2 lg:order-1">
                     <h2 class="text-2xl font-bold mb-4 text-white">旗語判讀</h2>
-                    <div class="explanation-box mb-4 border-l-4 border-red-500 bg-red-900/10">「敬畏海，才有資格救援。」</div>
-                    <div class="explanation-box text-xs space-y-1 mb-4">
-                        <p class="font-bold border-b border-white/10 mb-1 pb-1">旗語規範</p>
-                        <p>。綠：安全 | 。黃：注意</p>
-                        <p>。紅：危險 | 。雙紅：禁止下水</p>
+                    <div class="explanation-box mb-6 border-l-4 border-red-500">「敬畏海，才有資格救援。」</div>
+                    <div class="explanation-box text-xs space-y-1 mb-6">
+                        <p class="font-bold border-b border-white/20 mb-1 uppercase tracking-widest text-blue-400">旗語規範說明</p>
+                        <p>。綠旗：安全活動 | 。黃旗：注意安全</p>
+                        <p>。紅旗：海象危險 | 。雙紅：全區封鎖</p>
                     </div>
-                    <button onclick="showHint('flag')" class="w-full px-5 py-2 border border-slate-700 text-xs font-bold text-slate-400 rounded">查看提示</button>
+                    <button onclick="showHint('flag')" class="btn-action border-slate-700 text-xs py-2">查看判讀提示</button>
                 </div>
-                <div class="order-1 md:order-2">
-                    <div class="grid grid-cols-2 gap-4 w-full max-w-[320px] mx-auto">
-                        <div class="flag-item p-2" id="flag-green" onclick="selectFlag('green')"><div class="flag-visual bg-green-600"></div><p class="text-[10px] text-green-500 font-bold text-center mt-1">安全</p></div>
-                        <div class="flag-item p-2" id="flag-yellow" onclick="selectFlag('yellow')"><div class="flag-visual bg-yellow-500"></div><p class="text-[10px] text-yellow-500 font-bold text-center mt-1">注意</p></div>
-                        <div class="flag-item p-2" id="flag-red" onclick="selectFlag('red')"><div class="flag-visual bg-red-600"></div><p class="text-[10px] text-red-500 font-bold text-center mt-1">危險</p></div>
-                        <div class="flag-item p-2" id="flag-double-red" onclick="selectFlag('double-red')"><div class="flag-visual flex flex-col gap-1"><div class="h-1/2 bg-red-600"></div><div class="h-1/2 bg-red-600"></div></div><p class="text-[10px] text-red-400 font-bold text-center mt-1">禁止下水</p></div>
+                <div class="flex items-center justify-center order-1 lg:order-2">
+                    <div class="grid grid-cols-2 gap-4 w-full max-w-[320px]">
+                        <div class="flag-item" id="flag-green" onclick="selectFlag('green')"><div class="flag-visual bg-green-600"></div><p class="text-[10px] text-green-500 font-bold mt-2">SAFE</p></div>
+                        <div class="flag-item" id="flag-yellow" onclick="selectFlag('yellow')"><div class="flag-visual bg-yellow-500"></div><p class="text-[10px] text-yellow-500 font-bold mt-2">CAUTION</p></div>
+                        <div class="flag-item" id="flag-red" onclick="selectFlag('red')"><div class="flag-visual bg-red-600"></div><p class="text-[10px] text-red-500 font-bold mt-2">DANGER</p></div>
+                        <div class="flag-item" id="flag-double-red" onclick="selectFlag('double-red')"><div class="flag-visual flex flex-col gap-1"><div class="h-1/2 bg-red-600"></div><div class="h-1/2 bg-red-600"></div></div><p class="text-[10px] text-red-400 font-bold mt-2">CLOSED</p></div>
                     </div>
                 </div>
                 <div class="flex flex-col justify-center order-3">
                     <div class="p-6 bg-slate-900/90 border border-slate-700 rounded shadow-xl">
-                        <div class="flex flex-col gap-2 text-sm mb-6">
-                            <div class="flex justify-between border-b border-white/5 pb-2"><span>平均風速</span><span class="mono text-white font-bold">22 節</span></div>
-                            <div class="flex justify-between border-b border-white/5 pb-2"><span>浪高</span><span class="mono text-white font-bold">2.0 公尺</span></div>
+                        <div class="flex flex-col gap-4 text-sm mb-8 text-left">
+                            <div class="flex justify-between border-b border-white/5 pb-2"><span>平均風速</span><span class="mono text-white font-bold text-lg">22 節</span></div>
+                            <div class="flex justify-between border-b border-white/5 pb-2"><span>浪高</span><span class="mono text-white font-bold text-lg">2.0 公尺</span></div>
                         </div>
-                        <button onclick="checkFlag()" class="w-full btn-action py-4 font-bold text-white uppercase rounded">解鎖醫護箱</button>
+                        <button onclick="checkFlag()" class="w-full btn-action border-red-500 text-red-500">提交驗證</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 第三章｜時間的賽跑 -->
-        <section id="scene-8" class="scene-section hidden-scene bg-slate-900">
+        <!-- 第三章：時間的賽跑 -->
+        <section id="scene-8" class="scene-section hidden-scene bg-slate-900 text-center px-4">
             <div class="absolute inset-0 bg-slate-950 bg-[radial-gradient(circle_at_bottom,rgba(26,42,68,0.3)_0%,transparent_70%)]"></div>
-            <div class="max-w-2xl px-4 mx-auto relative z-10 text-center">
-                <div class="text-blue-400 mono text-xs mb-4 font-bold tracking-widest uppercase">CHAPTER_03</div>
-                <h2 class="text-3xl md:text-5xl font-bold mb-8 text-white tracking-tight">第三章｜時間的賽跑</h2>
-                <div class="p-6 bg-blue-950/10 border-l-4 border-blue-600 backdrop-blur-sm shadow-xl text-left space-y-4 text-slate-200 text-sm md:text-xl leading-relaxed rounded-r">
-                    <p>推進器葉片在撞擊時脫落，正躺在近岸礁岩區。若拿不回來，船無法撐到安全水域。</p>
-                    <p>但礁岩區走得太早水位太高，走得太晚潮已回湧。</p>
-                    <p class="text-white font-bold text-lg md:text-2xl text-center py-4 border-y border-blue-900/20 uppercase">「你們是在跟時間搶窗口。」</p>
+            <div class="max-w-3xl mx-auto relative z-10">
+                <div class="text-blue-400 mono text-xs mb-4 font-bold tracking-widest uppercase text-center">CHAPTER_03</div>
+                <h2 class="text-3xl md:text-5xl font-bold mb-10 text-white tracking-tight">第三章｜時間的賽跑</h2>
+                <div class="p-6 bg-blue-950/10 border-l-4 border-blue-600 shadow-xl text-left space-y-4 text-slate-200 text-sm md:text-lg leading-relaxed rounded-r">
+                    <p>推進器在撞擊時脫落葉片，正躺在近岸礁岩區。若拿不回來，船就算重啟也撐不到安全水域。礁岩區走得太早水位太高，走得太晚潮已回湧。你們是在跟時間搶窗口。</p>
+                    <p class="text-white font-bold text-lg md:text-2xl text-center py-4 border-y border-blue-900/20 uppercase tracking-widest">「懂潮，才能知進退。」</p>
                 </div>
-                <button onclick="nextScene(9)" class="mt-10 btn-action px-10 py-4 font-bold text-white uppercase tracking-widest rounded border-blue-400">開始潮汐判讀</button>
+                <button onclick="nextScene(9)" class="mt-10 btn-action border-blue-400">開始潮汐判讀</button>
             </div>
         </section>
 
         <section id="scene-9" class="scene-section hidden-scene">
-            <div class="interactive-layout mx-auto px-4">
-                <div class="flex flex-col justify-center text-left order-2 md:order-1">
-                    <h2 class="text-2xl font-bold mb-4 text-white">乾潮判讀</h2>
-                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">觀察圖表數據，選出最安全的乾潮時刻進入礁岩區。</p>
-                    <button onclick="showHint('tide')" class="w-full px-5 py-2 border border-slate-700 text-xs font-bold text-slate-400 rounded">查看判讀提示</button>
+            <div class="interactive-grid px-4">
+                <div class="flex flex-col justify-center text-left order-2 lg:order-1">
+                    <h2 class="text-2xl font-bold mb-4 text-white uppercase">乾潮判讀</h2>
+                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">觀察分析圖，選出最安全的乾潮時刻進入礁岩區。</p>
+                    <!-- 新增圖片說明提示 -->
+                    <div class="explanation-box mb-4 text-[10px] bg-blue-900/20 border-blue-800">
+                        <p class="font-bold text-blue-400 mb-1">判讀提示：</p>
+                        <p>波谷（曲線最低點）代表潮水退至最乾，礁岩裸露程度最高，此時進入回收零件最安全且時間最充裕。</p>
+                    </div>
+                    <button onclick="showHint('tide')" class="btn-action border-slate-700 text-xs py-2">查看詳細說明</button>
                 </div>
-                <div class="order-1 md:order-2 overflow-hidden">
-                    <div class="tide-chart-container aspect-[4/3] w-full max-w-[360px] mx-auto rounded shadow-2xl">
+                <div class="flex items-center justify-center order-1 lg:order-2 overflow-hidden">
+                    <div class="tide-chart-container w-full max-w-[400px]">
                         <svg viewBox="0 0 400 300" class="w-full h-full overflow-visible">
                             <line x1="45" y1="20" x2="45" y2="260" stroke="#475569" stroke-width="2" />
                             <line x1="45" y1="260" x2="380" y2="260" stroke="#475569" stroke-width="2" />
-                            <g fill="#94a3b8" font-size="12" font-weight="bold"><text x="40" y="64" text-anchor="end">+58</text><text x="40" y="96" text-anchor="end">+42</text><text x="40" y="180" text-anchor="end">0</text><text x="40" y="212" text-anchor="end">-16</text></g>
-                            <g fill="#475569" font-size="10" font-weight="bold"><text x="45" y="280" text-anchor="middle">10:00</text><text x="105" y="280" text-anchor="middle">12:00</text><text x="225" y="280" text-anchor="middle">16:30</text><text x="285" y="280" text-anchor="middle">18:00</text></g>
+                            <g fill="#94a3b8" font-size="14" font-weight="bold"><text x="40" y="64" text-anchor="end">+58</text><text x="40" y="96" text-anchor="end">+42</text><text x="40" y="180" text-anchor="end">0</text><text x="40" y="212" text-anchor="end">-16</text></g>
+                            <g fill="#475569" font-size="12" font-weight="bold"><text x="45" y="285" text-anchor="middle">10:00</text><text x="105" y="285" text-anchor="middle">12:00</text><text x="225" y="285" text-anchor="middle">16:30</text><text x="285" y="285" text-anchor="middle">18:00</text></g>
                             <path d="M 45,150 C 65,110 85,96 105,96 C 135,96 175,160 205,180 S 225,212 240,212 S 255,150 285,64 C 305,30 335,64 345,100" fill="none" stroke="#60a5fa" stroke-width="4" stroke-linecap="round" />
                             <line x1="45" y1="212" x2="380" y2="212" stroke="white" stroke-opacity="0.1" stroke-dasharray="4" />
+                            <circle cx="235" cy="212" r="5" fill="var(--sunrise-gold)" class="animate-pulse" />
+                            <text x="245" y="205" fill="var(--sunrise-gold)" font-size="10" font-weight="bold">LOW TIDE WINDOW</text>
                         </svg>
                     </div>
                 </div>
                 <div class="flex flex-col justify-center order-3">
-                    <div class="p-4 md:p-6 bg-slate-900/90 border border-slate-700 rounded shadow-xl text-center">
-                        <p class="text-xs font-bold text-white mb-4">選擇安全時刻：</p>
-                        <div class="grid grid-cols-2 gap-2">
+                    <div class="p-6 bg-slate-900/90 border border-slate-700 rounded shadow-xl text-center">
+                        <div class="grid grid-cols-2 lg:grid-cols-1 gap-2">
                             <button onclick="selectTideOption('A', this)" class="choice-btn">A. 12:00</button>
                             <button onclick="selectTideOption('B', this)" class="choice-btn">B. 14:30</button>
                             <button onclick="selectTideOption('C', this)" class="choice-btn">C. 16:30</button>
                             <button onclick="selectTideOption('D', this)" class="choice-btn">D. 18:30</button>
                         </div>
+                        <button onclick="checkTideAnswer()" class="w-full btn-action border-blue-400 mt-4">確認判讀結果</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 第四章｜啟航的窗口 -->
-        <section id="scene-10" class="scene-section hidden-scene bg-slate-900">
+        <!-- 第四章｜啟航的窗口 (修復資料沒有的問題) -->
+        <section id="scene-10" class="scene-section hidden-scene bg-slate-900 text-center px-4">
             <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?auto=format&fit=crop&q=80&w=1600')] bg-cover opacity-20"></div>
-            <div class="max-w-2xl px-4 mx-auto relative z-10 text-center">
+            <div class="max-w-2xl mx-auto relative z-10">
                 <div class="text-yellow-400 mono text-xs mb-4 font-bold tracking-widest uppercase">CHAPTER_04</div>
-                <h2 class="text-3xl md:text-5xl font-bold mb-8 text-white tracking-tight">第四章｜啟航的窗口</h2>
-                <div class="p-6 bg-yellow-950/10 border-l-4 border-yellow-500 backdrop-blur-sm shadow-xl text-left space-y-4 text-slate-200 text-sm md:text-xl leading-relaxed rounded-r">
-                    <p>引擎終於甦醒。船艙傳來低沉震動，像甦醒的巨獸。</p>
-                    <p class="text-red-500 font-bold text-lg md:text-2xl text-center py-4 border-y border-white/10 uppercase">「注意：風向改變中。」</p>
+                <h2 class="text-3xl md:text-5xl font-bold mb-10 text-white tracking-tight">第四章｜啟航的窗口</h2>
+                <div class="p-6 bg-yellow-950/10 border-l-4 border-yellow-500 shadow-xl text-left space-y-6 text-slate-200 text-sm md:text-lg leading-relaxed rounded-r">
+                    <p>推進器葉片裝回原位後，引擎終於有了反應。船艙深處傳來低沈震動，像一頭甦醒的巨獸。電力恢復了一部分，導航燈亮起。但在準備發動時，機器再次警示：</p>
+                    <p class="text-red-500 font-bold block text-xl py-2 uppercase border-y border-white/10 text-center">「注意：風向改變中。請重新評估出航條件。」</p>
                 </div>
-                <button onclick="nextScene(11)" class="mt-10 btn-action px-10 py-4 font-bold text-white uppercase tracking-widest rounded border-yellow-400">評估出航條件</button>
+                <button onclick="nextScene(11)" class="mt-10 btn-action border-yellow-400">進入評估介面</button>
             </div>
         </section>
 
         <section id="scene-11" class="scene-section hidden-scene">
-            <div class="interactive-layout mx-auto px-4">
-                <div class="flex flex-col justify-center text-left order-2 md:order-1">
-                    <h2 class="text-2xl font-bold mb-4 text-white">風級判讀</h2>
-                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">觀察海面監測影像，識別目前風力等級並擬定策略。</p>
-                    <button onclick="showHint('wind')" class="w-full px-5 py-2 border border-slate-700 text-xs font-bold text-slate-400 rounded">查看提示</button>
+            <div class="interactive-grid px-4">
+                <div class="flex flex-col justify-center text-left order-2 lg:order-1">
+                    <h2 class="text-2xl font-bold mb-4 text-white uppercase">航線風險評估</h2>
+                    <!-- 補全評估資料數據表 -->
+                    <div class="explanation-box mb-6">
+                        <p class="font-bold border-b border-white/20 mb-2 pb-1 uppercase tracking-widest text-yellow-500">蒲福風級監測對照</p>
+                        <table class="wind-data-table">
+                            <tr><td>3 級</td><td>微浪，波紋明顯</td></tr>
+                            <tr class="highlight"><td>4 級</td><td>小浪，碎浪白沫多</td></tr>
+                            <tr><td>5 級</td><td>中浪，白浪廣布</td></tr>
+                            <tr><td>6 級</td><td>大浪，飛沫吹散</td></tr>
+                        </table>
+                    </div>
+                    <button onclick="showHint('wind')" class="btn-action border-slate-700 text-xs py-2">查看監測建議</button>
                 </div>
-                <div class="order-1 md:order-2">
-                    <div class="sea-view-box rounded shadow-2xl" style="background-image: url('https://images.unsplash.com/photo-1544432128-40616110901e?auto=format&fit=crop&q=80&w=1000')">
+                <div class="flex items-center justify-center order-1 lg:order-2">
+                    <div class="sea-view-box w-full max-w-[360px]" style="background-image: url('https://images.unsplash.com/photo-1544432128-40616110901e?auto=format&fit=crop&q=80&w=1000')">
                         <div class="scan-line"></div>
                     </div>
                 </div>
                 <div class="flex flex-col justify-center order-3">
-                    <div id="wind-question-1" class="p-6 bg-slate-900/90 border border-slate-700 rounded shadow-xl mb-4">
-                        <p class="text-xs font-bold text-white mb-4">符合觀測影像的風級？</p>
-                        <div class="grid grid-cols-2 gap-2">
-                            <button onclick="selectWindOption('A', this)" class="choice-btn">A. 3級</button>
-                            <button onclick="selectWindOption('B', this)" class="choice-btn">B. 4級</button>
-                            <button onclick="selectWindOption('C', this)" class="choice-btn">C. 5級</button>
-                            <button onclick="selectWindOption('D', this)" class="choice-btn">D. 6級</button>
+                    <div id="wind-area" class="space-y-4">
+                        <div id="wind-question-1" class="p-5 bg-slate-900/90 border border-slate-700 rounded shadow-xl text-left">
+                            <p class="text-[10px] text-slate-500 uppercase font-bold mb-3">風級判讀？</p>
+                            <div class="grid grid-cols-2 lg:grid-cols-1 gap-2">
+                                <button onclick="selectWindOption('A', this)" class="choice-btn text-xs">A. 3 級</button>
+                                <button onclick="selectWindOption('B', this)" class="choice-btn text-xs">B. 4 級</button>
+                                <button onclick="selectWindOption('C', this)" class="choice-btn text-xs">C. 5 級</button>
+                                <button onclick="selectWindOption('D', this)" class="choice-btn text-xs">D. 6 級</button>
+                            </div>
                         </div>
-                    </div>
-                    <div id="wind-question-2" class="p-6 bg-slate-900/90 border border-slate-700 rounded shadow-xl hidden">
-                        <p class="text-xs font-bold text-white mb-4">應對行動？</p>
-                        <div class="space-y-2">
-                            <button onclick="selectActionOption('A', this)" class="choice-btn">A. 全速衝出</button>
-                            <button onclick="selectActionOption('B', this)" class="choice-btn">B. 審慎等待窗口</button>
+                        <div id="wind-question-2" class="p-5 bg-slate-900/90 border border-slate-700 rounded shadow-xl hidden text-left">
+                            <p class="text-xs font-bold text-white mb-4">應對行動？</p>
+                            <button onclick="selectActionOption('A', this)" class="choice-btn text-xs">A. 立即全速衝出</button>
+                            <button onclick="selectActionOption('B', this)" class="choice-btn text-xs">B. 啟動並等待窗口</button>
                         </div>
+                        <button onclick="checkWindAnswers()" class="w-full btn-action border-yellow-400">確認提交評估</button>
                     </div>
-                    <button onclick="checkWindAnswers()" class="w-full btn-action py-4 font-bold text-white uppercase rounded">確認提交</button>
                 </div>
             </div>
         </section>
 
-        <!-- 第五章｜和平的協議 -->
-        <section id="scene-12" class="scene-section hidden-scene bg-slate-900">
+        <!-- 第五章：和平的協議 -->
+        <section id="scene-12" class="scene-section hidden-scene bg-slate-900 text-center px-4">
             <div class="absolute inset-0 bg-slate-950 bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.1)_0%,transparent_70%)]"></div>
-            <div class="max-w-2xl px-4 mx-auto relative z-10 text-center">
+            <div class="max-w-2xl mx-auto relative z-10">
                 <div class="text-blue-300 mono text-xs mb-4 font-bold tracking-widest uppercase">CHAPTER_05</div>
-                <h2 class="text-3xl md:text-5xl font-bold mb-8 text-white tracking-tight">第五章｜和平的協議</h2>
-                <div class="p-6 bg-blue-950/10 border-l-4 border-blue-400 backdrop-blur-sm shadow-xl text-left space-y-4 text-slate-200 text-sm md:text-xl leading-relaxed rounded-r">
-                    <p>脫離了沙灘，前進中雷達亮起紅點。紅外線掃描顯示多組夜間活動交錯。</p>
-                    <p class="text-red-500 font-bold text-lg md:text-2xl text-center py-4 border-y border-blue-900/20 uppercase">「注意：海域活動異常。」</p>
+                <h2 class="text-3xl md:text-5xl font-bold mb-10 text-white tracking-tight">第五章｜和平的協議</h2>
+                <div class="p-6 bg-blue-950/10 border-l-4 border-blue-400 shadow-xl text-left space-y-5 text-slate-200 text-sm md:text-lg leading-relaxed rounded-r text-center">
+                    <p>引擎啟動後，海鷹號慢慢脫離沙灘。沿著岸際試圖朝安全方向修正。沒過多久，雷達亮起紅點：</p>
+                    <p class="text-red-500 font-bold block text-xl py-2 uppercase border-y border-white/10">「前方海域活動異常。請立即判讀風險。」</p>
                 </div>
-                <button onclick="nextScene(13)" class="mt-10 btn-action px-10 py-4 font-bold text-white uppercase tracking-widest rounded border-blue-400">啟動海域掃描</button>
+                <button onclick="nextScene(13)" class="mt-10 btn-action border-blue-400">啟動海域掃描</button>
             </div>
         </section>
 
         <section id="scene-13" class="scene-section hidden-scene">
-            <div class="interactive-layout mx-auto px-4">
-                <div class="flex flex-col justify-center text-left order-2 md:order-1">
-                    <h2 class="text-2xl font-bold mb-4 text-white">違規辨識</h2>
-                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">動力船誤入泳客區、潛水員離開範圍等行為會迅速升高風險。請糾察違規。</p>
-                    <button onclick="showHint('violation')" class="w-full px-5 py-2 border border-slate-700 text-xs font-bold text-slate-400 rounded">查看判讀提示</button>
+            <div class="interactive-grid px-4">
+                <div class="flex flex-col justify-center text-left order-2 lg:order-1">
+                    <h2 class="text-2xl font-bold mb-4 text-white uppercase">活動糾察</h2>
+                    <p class="text-slate-400 text-sm mb-8 leading-relaxed">識別異常：辨識掃描影像中，共有幾處活動處於錯誤的規定分區？</p>
+                    <button onclick="showHint('violation')" class="btn-action border-slate-700 text-xs py-2">查看提示</button>
                 </div>
-                <div class="order-1 md:order-2">
-                    <div class="scan-map-container rounded shadow-2xl">
+                <div class="flex items-center justify-center order-1 lg:order-2">
+                    <div class="scan-map-container shadow-2xl">
                         <div class="scan-radar"></div>
-                        <svg class="absolute inset-0 w-full h-full" opacity="0.2">
-                            <rect x="0" y="250" width="400" height="150" fill="rgba(234, 179, 8, 0.1)" stroke="rgba(234, 179, 8, 0.5)" />
-                            <circle cx="80" cy="80" r="50" fill="rgba(56, 189, 248, 0.1)" stroke="rgba(56, 189, 248, 0.5)" />
-                            <rect x="250" y="0" width="150" height="120" fill="rgba(239, 68, 68, 0.1)" stroke="rgba(239, 68, 68, 0.5)" />
+                        <svg class="absolute inset-0 w-full h-full" opacity="0.3" pointer-events="none">
+                            <rect x="0" y="240" width="400" height="150" fill="rgba(234, 179, 8, 0.2)" stroke="rgba(234, 179, 8, 0.5)" />
+                            <circle cx="85" cy="85" r="55" fill="rgba(56, 189, 248, 0.2)" stroke="rgba(56, 189, 248, 0.5)" />
+                            <rect x="250" y="0" width="150" height="130" fill="rgba(239, 68, 68, 0.2)" stroke="rgba(239, 68, 68, 0.5)" />
                         </svg>
-                        <!-- 標記縮放到掃描區內 -->
-                        <div class="scan-target" style="top: 140px; left: 40px;">A</div>
-                        <div class="scan-target" style="top: 260px; left: 180px;">B</div>
-                        <div class="scan-target" style="top: 40px; left: 280px;">C</div>
-                        <div class="scan-target" style="top: 100px; left: 140px;">D</div>
+                        <div class="scan-target" style="top: 145px; left: 45px;">A</div>
+                        <div class="scan-target" style="top: 270px; left: 190px;">B</div>
+                        <div class="scan-target" style="top: 45px; left: 290px;">C</div>
+                        <div class="scan-target" style="top: 110px; left: 140px;">D</div>
                     </div>
                 </div>
                 <div class="flex flex-col justify-center order-3">
-                    <div class="p-6 bg-slate-900/90 border border-slate-700 rounded shadow-xl text-center">
-                        <p class="text-xs font-bold text-white mb-6">畫面中共計幾處違規？</p>
-                        <div class="grid grid-cols-2 gap-2">
-                            <button onclick="selectViolationOption('A', this)" class="choice-btn">A. 1 處</button>
-                            <button onclick="selectViolationOption('B', this)" class="choice-btn">B. 2 處</button>
-                            <button onclick="selectViolationOption('C', this)" class="choice-btn">C. 3 處</button>
-                            <button onclick="selectViolationOption('D', this)" class="choice-btn">D. 4 處</button>
+                    <div class="p-6 bg-slate-900/90 border border-slate-700 rounded shadow-xl">
+                        <div class="flex flex-col gap-1">
+                            <button onclick="selectViolationOption('A', this)" class="choice-btn">A. 1 處違規</button>
+                            <button onclick="selectViolationOption('B', this)" class="choice-btn">B. 2 處違規</button>
+                            <button onclick="selectViolationOption('C', this)" class="choice-btn">C. 3 處違規</button>
+                            <button onclick="selectViolationOption('D', this)" class="choice-btn">D. 4 處違規</button>
                         </div>
+                        <button onclick="checkViolationAnswer()" class="w-full btn-action border-blue-400 mt-4">確認判讀答案</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 終章：SOS -->
-        <section id="scene-14" class="scene-section hidden-scene bg-black">
+        <!-- 終章：最後的 SOS -->
+        <section id="scene-14" class="scene-section hidden-scene bg-black text-center px-4">
             <div class="fire-glow"></div>
-            <div class="max-w-2xl px-4 mx-auto relative z-10 text-center">
+            <div class="max-w-2xl mx-auto relative z-10">
                 <div class="text-red-600 mono text-xs mb-4 font-bold tracking-widest uppercase">FINAL_CHAPTER</div>
-                <h2 class="text-3xl md:text-5xl font-bold mb-8 text-white tracking-tight">終章｜最後的 SOS</h2>
-                <div class="p-6 bg-red-950/20 border-l-4 border-red-600 backdrop-blur-md shadow-xl text-left space-y-4 text-slate-200 text-sm md:text-xl leading-relaxed rounded-r">
-                    <p>前進中發電機突然起火！儀表熄滅，雷達失效。</p>
-                    <p class="text-red-500 font-bold text-lg md:text-2xl text-center py-4 border-y border-red-900/40 uppercase">「剩餘能量僅能發送一次訊號。」</p>
-                    <p class="text-center font-light text-slate-400">這是最後一次機會。</p>
+                <h2 class="text-3xl md:text-5xl font-bold mb-10 text-white tracking-tight uppercase">SOS Signal</h2>
+                <div class="p-6 bg-red-950/20 border-l-4 border-red-600 shadow-xl text-left space-y-6 text-slate-200 text-sm md:text-lg leading-relaxed rounded-r text-center">
+                    <p>脫離區域時發電機突然起火！雷達失效，能量僅剩最後一次發送機會。</p>
+                    <p class="text-red-500 font-bold block text-xl py-4 border-y border-red-900/40 uppercase tracking-widest animate-pulse">「這是最後一次機會。」</p>
                 </div>
-                <button onclick="nextScene(15)" class="mt-10 btn-action px-10 py-4 font-bold text-white uppercase tracking-widest rounded border-red-400">發送緊急訊號</button>
+                <button onclick="nextScene(15)" class="mt-10 btn-action border-red-500">發送訊號</button>
             </div>
         </section>
 
         <section id="scene-15" class="scene-section hidden-scene">
-            <div class="interactive-layout mx-auto px-4">
-                <div class="flex flex-col justify-center text-left order-2 md:order-1">
-                    <h2 class="text-2xl font-bold mb-4 text-white">SOS 發送</h2>
-                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">識別 SOS 正確格式。真正的求救是在關鍵時刻傳遞正確訊號。</p>
-                    <button onclick="showHint('sos')" class="w-full px-5 py-2 border border-slate-700 text-xs font-bold text-slate-400 rounded">查看提示</button>
+            <div class="interactive-grid px-4">
+                <div class="flex flex-col justify-center text-left order-2 lg:order-1">
+                    <h2 class="text-2xl font-bold mb-4 text-white uppercase">最終驗證</h2>
+                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">識別正確的 SOS 圖像組合。真正的求救是在最關鍵的時候發出正確訊號。</p>
+                    <button onclick="showHint('sos')" class="choice-btn text-center">查看提示</button>
                 </div>
-                <div class="order-1 md:order-2">
-                    <div class="sos-ref w-full shadow-2xl rounded p-6">
-                        <p class="font-bold text-white text-xs tracking-widest uppercase border-b border-white/10 pb-2 mb-4">訊號對照</p>
-                        <div class="flex justify-around mb-2">
-                            <div class="symbol-box"><span class="text-3xl text-yellow-500">★</span><span class="text-[9px] text-slate-500 uppercase">Short</span></div>
-                            <div class="symbol-box"><span class="text-3xl text-blue-400">🌙</span><span class="text-[9px] text-slate-500 uppercase">Long</span></div>
+                <div class="flex items-center justify-center order-1 lg:order-2">
+                    <div class="p-8 border border-white/10 bg-black/40 text-center rounded shadow-2xl w-full max-w-[300px]">
+                        <p class="font-bold text-white text-[10px] tracking-widest uppercase border-b border-white/10 pb-2 mb-8">Morse Guide</p>
+                        <div class="flex justify-around">
+                            <div class="flex flex-col items-center"><span class="text-4xl text-yellow-500">★</span><span class="text-[9px] font-bold mt-1 uppercase">Short</span></div>
+                            <div class="flex flex-col items-center"><span class="text-4xl text-blue-400">🌙</span><span class="text-[9px] font-bold mt-1 uppercase">Long</span></div>
                         </div>
-                        <p class="text-[9px] text-slate-500 italic text-center">求救訊號由三段組成</p>
                     </div>
                 </div>
                 <div class="flex flex-col justify-center order-3">
                     <div class="p-6 bg-slate-900/90 border border-slate-700 rounded shadow-xl text-center border-red-900">
-                        <p class="text-xs font-bold text-white mb-6">正確的 SOS 訊號？</p>
-                        <div class="grid grid-cols-1 gap-2">
-                            <button onclick="selectSOSOption('A', this)" class="choice-btn">A. ★★／🌙🌙／★★</button>
-                            <button onclick="selectSOSOption('B', this)" class="choice-btn">B. ★★★／🌙🌙🌙／★★★</button>
-                            <button onclick="selectSOSOption('C', this)" class="choice-btn">C. 🌙🌙🌙／★★★／🌙🌙🌙</button>
-                            <button onclick="selectSOSOption('D', this)" class="choice-btn">D. ★🌙★／🌙★🌙／★🌙★</button>
-                        </div>
+                        <button onclick="selectSOSOption('A', this)" class="choice-btn">A. ★★／🌙🌙／★★</button>
+                        <button onclick="selectSOSOption('B', this)" class="choice-btn">B. ★★★／🌙🌙🌙／★★★</button>
+                        <button onclick="selectSOSOption('C', this)" class="choice-btn">C. 🌙🌙🌙／★★★／🌙🌙🌙</button>
+                        <button onclick="selectSOSOption('D', this)" class="choice-btn">D. ★🌙★／🌙★🌙／★🌙★</button>
+                        <button onclick="checkSOSAnswer()" class="w-full btn-action border-red-500 mt-6">發送 SOS</button>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- 結局｜重獲新生 -->
-        <section id="scene-rebirth" class="scene-section hidden-scene bg-slate-950">
+        <section id="scene-rebirth" class="scene-section hidden-scene bg-slate-950 px-4 text-center">
             <div class="absolute inset-0 bg-gradient-to-t from-orange-900/40 via-slate-950 to-slate-950 pointer-events-none"></div>
-            <div class="max-w-4xl px-4 text-center mx-auto relative z-10">
-                <h2 class="text-4xl md:text-7xl font-bold mb-4 text-white tracking-tight">結局｜重獲新生</h2>
-                <p class="text-lg md:text-2xl text-sunrise-gold mb-10 tracking-widest font-bold">你們修復的不只是船，更是對海的理解。</p>
-                <div class="space-y-6 text-base md:text-xl text-slate-200 leading-relaxed font-light mb-12 text-center px-4">
-                    <p>清晨的第一道光，從外木山海平面升起。海巡小艇成功抵達。</p>
-                    <p>昨夜的海沒有變得溫柔，真正改變的，是你們已經學會如何讀懂它、尊重它。</p>
+            <div class="max-w-4xl px-4 mx-auto relative z-20">
+                <h2 class="text-5xl md:text-8xl font-bold mb-4 text-white tracking-tight uppercase">Rebirth</h2>
+                <p class="text-lg md:text-2xl text-sunrise-gold mb-10 tracking-widest font-bold uppercase">重獲新生</p>
+                <div class="space-y-6 text-sm md:text-lg text-slate-200 leading-relaxed font-light mb-12 text-center">
+                    <p>清晨的第一道光從海平面升起，海巡小艇抵達。昨夜的海沒有變溫柔，是你們學會了如何尊重它。</p>
                 </div>
-                <div class="mb-10">
-                    <h3 id="final-rank-title" class="badge-title text-2xl md:text-4xl mb-2">生存評價：海象領航者</h3>
-                </div>
-                <div class="flex flex-col md:flex-row justify-center gap-4">
-                    <button onclick="triggerFlashTransition('results')" class="btn-action px-10 py-4 font-bold text-white tracking-widest rounded border-sunrise-gold">查看任務成果</button>
-                    <button onclick="restartGame()" class="px-10 py-4 border border-slate-700 bg-transparent text-slate-400 hover:text-white font-bold uppercase tracking-widest rounded">再次挑戰</button>
+                <div class="mb-10"><h3 id="final-rank-title" class="badge-title">海象領航者</h3></div>
+                <div class="flex flex-col md:flex-row justify-center gap-6">
+                    <button onclick="triggerFlashTransition('results')" class="btn-action border-sunrise-gold">查看報告</button>
+                    <button onclick="restartGame()" class="btn-action border-slate-700 bg-transparent">再次挑戰</button>
                 </div>
             </div>
         </section>
 
-        <!-- 成果總覽頁 -->
-        <section id="scene-results" class="results-page hidden-scene">
+        <!-- 報告 -->
+        <section id="scene-results" class="results-page hidden-scene text-center">
             <div class="max-w-6xl mx-auto px-4 pb-20">
-                <div class="text-center mb-10">
-                    <h2 class="text-3xl md:text-5xl font-black text-white tracking-tighter mb-2">任務成果總覽</h2>
-                    <p class="text-slate-400 text-sm">You have completed the Waimushan survival mission.</p>
+                <h2 class="text-4xl md:text-6xl font-black text-white tracking-tighter mb-4 uppercase">Mission Report</h2>
+                <div class="stats-grid mb-12">
+                    <div class="result-card"><p class="text-[10px] text-slate-500 uppercase mb-1">Time</p><p id="stat-time" class="text-xl md:text-3xl font-black text-white mono">--:--</p></div>
+                    <div class="result-card"><p class="text-[10px] text-slate-500 uppercase mb-1">Accuracy</p><p id="stat-accuracy" class="text-xl md:text-3xl font-black text-blue-400 mono">--%</p></div>
+                    <div class="result-card"><p class="text-[10px] text-slate-500 uppercase mb-1">Hints</p><p id="stat-hints" class="text-xl md:text-3xl font-black text-yellow-500 mono">0</p></div>
+                    <div class="result-card"><p class="text-[10px] text-slate-500 uppercase mb-1">Status</p><p class="text-xl md:text-3xl font-black text-green-400 mono uppercase">Done</p></div>
                 </div>
-
-                <div class="stats-grid">
-                    <div class="result-card text-center"><p class="text-[9px] text-slate-500 uppercase mb-1">Time</p><p id="stat-time" class="text-xl md:text-2xl font-black text-white mono">--:--</p></div>
-                    <div class="result-card text-center"><p class="text-[9px] text-slate-500 uppercase mb-1">Accuracy</p><p id="stat-accuracy" class="text-xl md:text-2xl font-black text-blue-400 mono">--%</p></div>
-                    <div class="result-card text-center"><p class="text-[9px] text-slate-500 uppercase mb-1">Hints</p><p id="stat-hints" class="text-xl md:text-2xl font-black text-yellow-500 mono">0</p></div>
-                    <div class="result-card text-center"><p class="text-[9px] text-slate-500 uppercase mb-1">Repair</p><p class="text-xl md:text-2xl font-black text-green-400 mono">100%</p></div>
-                </div>
-
-                <div class="p-6 md:p-10 bg-black/40 border border-white/10 rounded-lg text-center mb-10">
-                    <h3 class="text-xl md:text-2xl font-bold text-white mb-6 tracking-widest">你帶走的，不只是通關紀錄</h3>
-                    <div class="text-lg md:text-xl font-black text-sunrise-gold mb-10 leading-snug">懂海，不是記住知識；是在需要判讀的時候，做出正確選擇。</div>
-                    <p id="personalized-comment" class="text-slate-300 italic mb-10 leading-relaxed text-sm md:text-base px-2 md:px-10"></p>
-                    <button onclick="restartGame()" class="btn-action px-12 py-4 text-base font-bold rounded">重新啟動航線</button>
+                <div class="p-10 md:p-14 bg-black/40 border border-white/10 rounded-lg shadow-2xl relative">
+                    <div class="text-lg md:text-3xl font-black text-sunrise-gold mb-10 leading-snug uppercase">懂海，是在判斷的時候做出正確選擇。</div>
+                    <p id="personalized-comment" class="text-slate-300 italic mb-10 leading-relaxed"></p>
+                    <button onclick="restartGame()" class="btn-action border-sunrise-gold">Restart Mission</button>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 px-8 py-4 bg-slate-900 border border-slate-700 text-white shadow-2xl opacity-0 transition-all duration-300 z-[2000] text-xs font-bold tracking-widest text-center rounded-full pointer-events-none"></div>
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 px-8 py-3 bg-slate-900 border border-slate-700 text-white shadow-2xl opacity-0 transition-all duration-300 z-[3000] text-xs font-bold tracking-widest text-center rounded-full pointer-events-none"></div>
 
     <script>
         let gameState = { 
-            startTime: Date.now(),
-            correctCount: 0,
-            wrongCount: 0,
-            hintsUsed: 0,
+            startTime: Date.now(), correctCount: 0, wrongCount: 0, hintsUsed: 0,
             hull: 32, energy: 100, chapter: "序章", tideSeconds: 1200, 
             selectedCells: [], selectedFlag: null, selectedTide: null, selectedWind: null, 
             selectedAction: null, selectedViolation: null, selectedSOS: null, 
@@ -624,48 +598,48 @@
             setInterval(() => { 
                 if (gameState.tideSeconds > 0) { 
                     gameState.tideSeconds--; 
-                    const m = Math.floor(gameState.tideSeconds / 60); 
-                    const s = gameState.tideSeconds % 60; 
                     const tideEl = document.getElementById('nav-tide'); 
-                    if (tideEl) tideEl.innerText = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`; 
+                    if (tideEl) {
+                        const m = Math.floor(gameState.tideSeconds / 60); 
+                        const s = gameState.tideSeconds % 60; 
+                        tideEl.innerText = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`; 
+                    }
                 } 
             }, 1000); 
         }
 
         function triggerFlashTransition(targetSceneId) {
             const flash = document.getElementById('flash-overlay');
-            flash.classList.add('flashing');
+            if (flash) flash.classList.add('flashing');
             
             try {
                 const video = document.getElementById('intro-video');
-                if (video && video.contentWindow) {
-                    video.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-                }
+                if (video && video.contentWindow) { video.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); }
             } catch(e) {}
 
             if (targetSceneId === 'results') showResults();
 
             setTimeout(() => { 
                 nextScene(targetSceneId); 
-                flash.classList.remove('flashing'); 
+                if (flash) flash.classList.remove('flashing'); 
             }, 300);
         }
 
         function nextScene(id) {
             document.querySelectorAll('.scene-section').forEach(s => s.classList.add('hidden-scene'));
-            document.getElementById('scene-results').classList.add('hidden-scene');
+            const resultsPage = document.getElementById('scene-results');
+            if(resultsPage) resultsPage.classList.add('hidden-scene');
             
-            const targetId = (typeof id === 'string') ? `scene-${id}` : `scene-${id}`;
+            const targetId = (typeof id === 'string' && id.length > 2) ? `scene-${id}` : `scene-${id}`;
             const target = document.getElementById(targetId);
             if (target) {
                 target.classList.remove('hidden-scene');
-                if (id == 2) runTypewriter("typewriter-log", "海鷹號夜間巡邏途中遭遇異常海象重擊。\n通訊失效、動力中斷、船體擱淺。\n唯一仍可運作的設備，只剩環境探偵機器。");
+                if (id == 2) runTypewriter("typewriter-log", "海鷹號巡邏途中遭遇重擊。\n通訊失效、動力中斷、船體擱淺。\n環境探偵機器為唯一存活設備。");
                 if (id == 6) { gameState.chapter = "第二章"; updateStatsDisplay(); }
                 if (id == 8) { gameState.chapter = "第三章"; updateStatsDisplay(); }
                 if (id == 10) { gameState.chapter = "第四章"; updateStatsDisplay(); }
                 if (id == 12) { gameState.chapter = "第五章"; updateStatsDisplay(); }
                 if (id == 14) { gameState.chapter = "終章"; updateStatsDisplay(); }
-                if (id == 'rebirth') { gameState.chapter = "結局"; updateStatsDisplay(); }
             }
             window.scrollTo(0,0);
         }
@@ -678,62 +652,90 @@
         }
 
         function triggerRedAlert() { gameState.chapter = "啟動"; updateStatsDisplay(); nextScene(3); }
-        function confirmMission() { document.getElementById('top-nav').style.opacity = '1'; gameState.chapter = "第一章"; updateStatsDisplay(); nextScene(4); startTideTimer(); }
+        function confirmMission() { 
+            const nav = document.getElementById('top-nav');
+            if(nav) nav.style.opacity = '1'; 
+            gameState.chapter = "第一章"; 
+            updateStatsDisplay(); 
+            nextScene(4); 
+            startTideTimer(); 
+        }
 
-        // 互動邏輯
+        // 核心交互
         function toggleCell(el, num) { el.classList.toggle('selected'); const idx = gameState.selectedCells.indexOf(num); if (idx > -1) gameState.selectedCells.splice(idx, 1); else gameState.selectedCells.push(num); }
         function checkRipCurrent() { if (document.getElementById('rip-answer').value == "15") setupFeedback('rip', true); else setupFeedback('rip', false); }
-        function selectFlag(id) { gameState.selectedFlag = id; document.querySelectorAll('.flag-item').forEach(el => el.classList.remove('active')); document.getElementById(`flag-${id}`).classList.add('active'); }
+        
+        function selectFlag(id) { 
+            gameState.selectedFlag = id; 
+            document.querySelectorAll('.flag-item').forEach(el => el.classList.remove('active')); 
+            const el = document.getElementById(`flag-${id}`);
+            if(el) el.classList.add('active'); 
+        }
         function checkFlag() { if (!gameState.selectedFlag) return showToast("請選擇旗幟"); setupFeedback('flag', gameState.selectedFlag === 'double-red'); }
-        function selectTideOption(opt, el) { gameState.selectedTide = opt; document.querySelectorAll('.choice-btn').forEach(btn => btn.classList.remove('active')); el.classList.add('active'); }
+        
+        function selectTideOption(opt, el) { gameState.selectedTide = opt; document.querySelectorAll('#scene-9 .choice-btn').forEach(btn => btn.classList.remove('active')); el.classList.add('active'); }
         function checkTideAnswer() { if (!gameState.selectedTide) return showToast("請選擇時間"); setupFeedback('tide', gameState.selectedTide === 'C'); }
+
         function selectWindOption(opt, el) { gameState.selectedWind = opt; el.parentElement.querySelectorAll('.choice-btn').forEach(btn => btn.classList.remove('active')); el.classList.add('active'); }
         function selectActionOption(opt, el) { gameState.selectedAction = opt; el.parentElement.querySelectorAll('.choice-btn').forEach(btn => btn.classList.remove('active')); el.classList.add('active'); }
-        function checkWindAnswers() { if (gameState.windStep === 1) { if (gameState.selectedWind === 'B') { document.getElementById('wind-question-1').classList.add('opacity-40'); document.getElementById('wind-question-2').classList.remove('hidden'); gameState.windStep = 2; } else setupFeedback('wind', false); } else { if (!gameState.selectedAction) return showToast("請選擇行動"); setupFeedback('wind', gameState.selectedAction === 'B'); } }
-        function selectViolationOption(opt, el) { gameState.selectedViolation = opt; document.querySelectorAll('.choice-btn').forEach(btn => btn.classList.remove('active')); el.classList.add('active'); }
-        function checkViolationAnswer() { if (!gameState.selectedViolation) return showToast("請選擇違規數量"); setupFeedback('violation', gameState.selectedViolation === 'C'); }
-        function selectSOSOption(opt, el) { gameState.selectedSOS = opt; document.querySelectorAll('.choice-btn').forEach(btn => btn.classList.remove('active')); el.classList.add('active'); }
+        function checkWindAnswers() { if (gameState.windStep === 1) { if (gameState.selectedWind === 'B') { document.getElementById('wind-question-1').style.opacity = '0.3'; document.getElementById('wind-question-2').classList.remove('hidden'); gameState.windStep = 2; } else setupFeedback('wind', false); } else { if (!gameState.selectedAction) return showToast("請選擇策略"); setupFeedback('wind', gameState.selectedAction === 'B'); } }
+        
+        function selectViolationOption(opt, el) { 
+            gameState.selectedViolation = opt; 
+            document.querySelectorAll('#scene-13 .choice-btn').forEach(btn => btn.classList.remove('active')); 
+            el.classList.add('active'); 
+        }
+        function checkViolationAnswer() { if (!gameState.selectedViolation) return showToast("請選擇數量"); setupFeedback('violation', gameState.selectedViolation === 'C'); }
+
+        function selectSOSOption(opt, el) { 
+            gameState.selectedSOS = opt; 
+            document.querySelectorAll('#scene-15 .choice-btn').forEach(btn => btn.classList.remove('active')); 
+            el.classList.add('active'); 
+        }
         function checkSOSAnswer() { if (!gameState.selectedSOS) return showToast("請選擇訊號"); setupFeedback('sos', gameState.selectedSOS === 'B'); }
 
         function setupFeedback(type, isSuccess) {
             const overlay = document.getElementById('feedback-overlay');
             const panel = document.getElementById('feedback-panel');
+            if (!overlay || !panel) return;
+
             gameState.isSuccess = isSuccess;
             gameState.pendingType = type;
             overlay.style.display = 'flex';
+            
             const title = document.getElementById('feedback-title');
             const content = document.getElementById('feedback-content');
-            const btn = document.getElementById('feedback-btn');
             const sysBox = document.getElementById('feedback-system');
             const extraBody = document.getElementById('feedback-extra-body');
             
             if (isSuccess) {
                 gameState.correctCount++;
-                panel.className = "feedback-panel p-6 md:p-10 success-border shadow-2xl rounded";
-                title.innerText = "判讀正確"; title.className = "text-2xl md:text-3xl font-bold tracking-tighter success-accent";
-                btn.className = "w-full py-4 bg-green-500 text-black font-bold uppercase tracking-widest rounded";
-                btn.innerText = "CONTINUE";
+                panel.style.borderTopColor = 'var(--success-green)';
+                title.innerText = "SUCCESS"; 
                 sysBox.classList.remove('hidden');
-
-                if (type === 'rip') { content.innerHTML = "離岸流道判讀正確。海鷹號成功標記危險。"; extraBody.innerText = "安靜平滑的海域能量向外拉扯，看似平靜卻最危險。"; updateSysFeedback("航線判讀", "+15%", "1 / 6"); }
-                else if (type === 'flag') { content.innerText = "雙紅旗條件確認，醫護箱已解鎖。"; extraBody.innerText = "真正懂海的人，是知道什麼時候絕對不能下水的人。"; updateSysFeedback("醫護模組", "+10%", "2 / 6"); }
-                else if (type === 'tide') { content.innerText = "乾潮時刻確認。零件成功回收。"; extraBody.innerText = "海岸風險不只在地點，也在時間。"; updateSysFeedback("動力修復", "+20%", "3 / 6"); }
-                else if (type === 'wind') { content.innerText = "出航條件判讀正確。引擎啟動。"; extraBody.innerText = "安全離岸是建立在正確判讀環境條件之上。"; updateSysFeedback("啟航評估", "+15%", "4 / 6"); }
-                else if (type === 'violation') { content.innerText = "違規數量判讀正確。導航修正成功。"; extraBody.innerText = "守住界線，海域秩序才能確保安全共存。"; updateSysFeedback("安全導航", "+15%", "5 / 6"); }
-                else if (type === 'sos') { content.innerHTML = "SOS 訊號發送成功！救援已鎖定。"; extraBody.innerText = "真正的求救是在關鍵時刻傳遞正確訊號。"; updateSysFeedback("程序完結", "DONE", "6 / 6"); }
+                if (type === 'rip') { content.innerHTML = "離岸流識別正確。導航已標記避開拉力路徑。"; extraBody.innerText = "深色平滑區塊代表能量強勁回拉，最危險。"; updateSysFeedback("航線修正", "+15%", "1 / 6"); }
+                else if (type === 'flag') { content.innerText = "旗語判讀符合當前風浪。醫護箱解鎖成功。"; extraBody.innerText = "真正懂海的人，知道何時絕對不能下水。"; updateSysFeedback("醫護模組", "+10%", "2 / 6"); }
+                else if (type === 'tide') { content.innerText = "最低潮位確認。零件成功回收。"; extraBody.innerText = "乾潮時刻是海岸生存的核心。"; updateSysFeedback("動力修復", "+20%", "3 / 6"); }
+                else if (type === 'wind') { content.innerText = "風級判讀正確。引擎順利啟動離岸。"; extraBody.innerText = "判讀風級能防止失控撞向岩礁。"; updateSysFeedback("啟航評估", "+15%", "4 / 6"); }
+                else if (type === 'violation') { content.innerText = "違規數量正確。導航修正成功。"; extraBody.innerText = "守住分區界線，海上秩序才平安。"; updateSysFeedback("秩序維護", "+15%", "5 / 6"); }
+                else if (type === 'sos') { content.innerHTML = "SOS 成功發送。救援單位已鎖定。"; extraBody.innerText = "正確格式是關鍵時刻唯一的希望。"; updateSysFeedback("程序完結", "DONE", "6 / 6"); }
             } else {
                 gameState.wrongCount++;
                 gameState.energy -= 10; updateStatsDisplay();
-                panel.className = "feedback-panel p-6 md:p-10 error-border shadow-2xl rounded";
-                title.innerText = "判讀錯誤"; title.className = "text-2xl md:text-3xl font-bold text-red-500";
-                btn.innerText = "RETRY"; btn.className = "w-full py-4 bg-red-600 text-white font-bold uppercase tracking-widest rounded";
+                panel.style.borderTopColor = 'var(--alert-red)';
+                title.innerText = "FAILED"; 
                 sysBox.classList.add('hidden');
-                content.innerText = "條件不符，系統拒絕操作。";
-                extraBody.innerText = "請根據系統警示重新檢閱環境特徵。";
+                content.innerText = "環境判讀不符，系統拒絕操作。";
+                extraBody.innerText = "請根據警示重新檢閱環境特徵。";
             }
         }
 
-        function updateSysFeedback(mod, rep, prog) { document.getElementById('sys-module-name').innerText = mod; document.getElementById('sys-repair-val').innerText = rep; document.getElementById('sys-progress-val').innerText = prog; }
+        function updateSysFeedback(mod, rep, prog) { 
+            const m = document.getElementById('sys-module-name');
+            const r = document.getElementById('sys-repair-val');
+            const p = document.getElementById('sys-progress-val');
+            if(m) m.innerText = mod; if(r) r.innerText = rep; if(p) p.innerText = prog;
+        }
 
         function closeFeedback() {
             document.getElementById('feedback-overlay').style.display = 'none';
@@ -748,33 +750,30 @@
         }
 
         function showResults() {
-            const timeElapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
-            const m = Math.floor(timeElapsed / 60);
-            const s = timeElapsed % 60;
-            document.getElementById('stat-time').innerText = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-            
-            const totalAttempts = gameState.correctCount + gameState.wrongCount;
-            const accuracy = totalAttempts > 0 ? Math.round((gameState.correctCount / totalAttempts) * 100) : 0;
+            const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+            document.getElementById('stat-time').innerText = `${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, '0')}`;
+            const total = gameState.correctCount + gameState.wrongCount;
+            const accuracy = total > 0 ? Math.round((gameState.correctCount / total) * 100) : 0;
             document.getElementById('stat-accuracy').innerText = accuracy + '%';
             document.getElementById('stat-hints').innerText = gameState.hintsUsed;
-
-            const commentEl = document.getElementById('personalized-comment');
-            if (accuracy >= 90) commentEl.innerText = "你的判讀穩定且果斷。這不是運氣，是成熟的判讀力。";
-            else commentEl.innerText = "真正平安回來的不是僥倖，而是你願意尊重海的規則。";
+            const comment = accuracy >= 85 ? "判讀極其果斷，具備成熟的海象識別能力。" : "生存任務完成。平安回來的關鍵，是學會尊重海。";
+            document.getElementById('personalized-comment').innerText = comment;
         }
 
-        function updateStatsDisplay() { document.getElementById('nav-hull').innerText = gameState.hull + '%'; document.getElementById('nav-energy').innerText = gameState.energy + '%'; document.getElementById('nav-chapter').innerText = gameState.chapter; }
-        function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3500); }
+        function updateStatsDisplay() { 
+            const h = document.getElementById('nav-hull'); const e = document.getElementById('nav-energy'); const c = document.getElementById('nav-chapter');
+            if(h) h.innerText = gameState.hull + '%'; if(e) e.innerText = gameState.energy + '%'; if(c) c.innerText = gameState.chapter;
+        }
+        function showToast(msg) { const t = document.getElementById('toast'); if(t) { t.innerText = msg; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3500); } }
         function restartGame() { location.reload(); }
-        
         function showHint(type) {
             gameState.hintsUsed++;
             let msg = "";
-            if (type === 'rip') msg = "注意 3, 5, 7 號異常安靜區。";
-            if (type === 'flag') msg = "浪高 2M 且風速 22 節已達『雙紅旗』。";
-            if (type === 'tide') msg = "波谷代表最低潮位 (16:30)。";
-            if (type === 'wind') msg = "碎浪沫通常為 4 級風。";
-            if (type === 'violation') msg = "A、B、C 都在錯誤區域。";
+            if (type === 'rip') msg = "注意 3, 5, 7 號安靜深色區塊。";
+            if (type === 'flag') msg = "浪高 2M、風速 22 節已達『雙紅旗』標準。";
+            if (type === 'tide') msg = "波谷為最低潮位，曲線底部約 16:30。";
+            if (type === 'wind') msg = "碎浪沫特徵符合 4 級風；審慎離岸。";
+            if (type === 'violation') msg = "A、B、C 目標皆處於錯誤區域。";
             if (type === 'sos') msg = "SOS:短短短／長長長／短短短。";
             showToast(msg);
         }
